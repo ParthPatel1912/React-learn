@@ -25,9 +25,9 @@ const schema = yup.object().shape({
     age: yup
         .number()
         .required(),
-    dob: yup
-        .date()
-        .required(),
+    // dob: yup
+    //     .date()
+    //     .required(),
     password: yup
         .string()
         .required()
@@ -46,23 +46,23 @@ const schema = yup.object().shape({
 });
 
 
-const validate = (values) => {
-    let errors = {};
+// const validate = (values) => {
+//     let errors = {};
 
-    if (!values.firstname.trim()) {
-        errors.firstname = "Firstname is required";
-    }
+//     if (!values.firstname.trim()) {
+//         errors.firstname = "Firstname is required";
+//     }
 
-    if (!values.email) {
-        errors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(values.email)) {
-        errors.email = "Invalid Email";
-    }
-    return errors;
-}
+//     if (!values.email) {
+//         errors.email = "Email is required";
+//     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(values.email)) {
+//         errors.email = "Invalid Email";
+//     }
+//     return errors;
+// }
 
 const submitForm = (values) => {
-    alert(JSON.stringify(values, null, 1));
+    console.log(values);
 };
 
 export class YupForm extends Component {
@@ -99,10 +99,10 @@ export class YupForm extends Component {
 
                     {/* {(formik) => ( */}
                     {({ values, handleChange, handleSubmit, errors, touched, handleBlur, dirty, isValid }) => (
-                        <Form className='col-md-4 offset-4' onSubmit={handleSubmit}>
+                        <Form data-test-id='form' className='col-md-4 offset-4' onSubmit={handleSubmit}>
                             <Form.Group controlId="firstName">
                                 <Form.Label>First Name:</Form.Label>
-                                <Form.Control type="text" name='firstname' value={values.firstname} onChange={handleChange} />
+                                <Form.Control type="text" data-test-id='firstname' name='firstname' value={values.firstname} onChange={handleChange} />
                                 {touched.firstname && errors.firstname ? (<div className='text-danger'>{errors.firstname}</div>) : null}
                             </Form.Group>
                             <Form.Group controlId="email">

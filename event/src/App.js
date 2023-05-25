@@ -12,11 +12,15 @@ import Test from './Components/test';
 import FormFormik from './Components/FormFormik';
 import YupForm from './Components/YupForm';
 import ReactHookForm from './Components/ReactHookForm';
+import TestForm from './Components/TestForm';
+
+const item = [1, 2, 3, 4, 5];
+const ObjItem = { a: 1, b: 2, c: 3 };
 
 function App() {
     return (
         <div>
-            <Header/>
+            <Header />
             <Routes>
                 <Route path='/' element={<Home />}></Route>
                 <Route path='/signup' element={<SignUp />}></Route>
@@ -28,6 +32,7 @@ function App() {
                 <Route path="/formikForm" element={<FormFormik />} />
                 <Route path="/yupForm" element={<YupForm />} />
                 <Route path="/reactHookForm" element={<ReactHookForm />} />
+                <Route path="/testform" element={<TestForm data='new' newData={item} objItem={ObjItem} />} />
             </Routes>
         </div>
     );

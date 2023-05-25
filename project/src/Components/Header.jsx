@@ -58,7 +58,6 @@ const Header = () => {
                                         </li>
                                     </ul>
                                 </div>
-                                <NavLink to={"/signup"} className="d-none d-sm-block btn_1 home_page_btn">sing up</NavLink>
                             </nav>
                         </div>
                     </div>

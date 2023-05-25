@@ -43,7 +43,7 @@ const FormFun = (props) => {
                 <span>Output onChange : {Form.fname},{Form.lname},{Form.bd}</span><br />
                 {(Show) ? <div> <span>Output Onclick : {Form.fname},{Form.lname},{Form.bd}</span> </div> : ''}
                 <br />
-                <button onClick={gotoHome}>Go to Home</button>
+                <button id='Home' onClick={gotoHome}>Go to Home</button>
                 <button onClick={() => navigate(-1)}>Go to back</button>
             </div>
         </div>

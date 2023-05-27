@@ -24,7 +24,6 @@ const Todo = () => {
         }
         setDetails('');
         setHours(0);
-        console.log(todo);
     }
 
     const CompleteTask = (taskName: string): void => {

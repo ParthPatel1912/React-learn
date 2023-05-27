@@ -11,7 +11,7 @@ type AnswerObject = {
 
 interface State {
     loading: boolean,
-    questions: QuestionState[] ,
+    questions: QuestionState[],
     number: number,
     userAnswers: AnswerObject[],
     score: number,
@@ -23,8 +23,6 @@ const nextQuestion = () => {
 }
 
 const TOTAL_QUESTIONS = 10;
-
-// console.log(fetchQuizQestions(10, Difficulty.EASY));
 
 export class Quiz extends Component<{}, State> {
     state = {
@@ -58,23 +56,23 @@ export class Quiz extends Component<{}, State> {
 
     }
     checkAnswer = (e: React.MouseEvent<HTMLButtonElement>) => {
-        // const answer = e.currentTarget.value;
-        const correct = this.state.questions[this.state.number]
-        // @ts-ignore
-        console.log("file: Quiz.tsx:63 ~ Quiz ~ correct:", correct.correct_answer, 'correct')
-        // if (correct) this.setState({ score: this.state.score + 1 });
-        // const answerObject = {
-            // question: this.state.questions[number].question,
-        //     answer,
-        //     correct,
-        //     correctAnswer: this.state.questions[number].correct_answer,
-        // };
-        // this.setState({
-        //     UserAnswers: (prev => [...prev, answerObject]);
-        // })
+        if (!this.state.gameOver) {
+            const answer = e.currentTarget.value;
+            const correct = this.state.questions[this.state.number];
+            console.log("file: Quiz.tsx:63 ~ Quiz ~ correct:", correct, 'correct')
+            if (correct) this.setState({ score: this.state.score + 1 });
+            // const answerObject = {
+            // question: this.state.questions[this.state.number].question,
+            //     answer,
+            //     correct,
+            //     correctAnswer: this.state.questions[number].correct_answer,
+            // };
+            // this.setState({
+            //     UserAnswers: (prev => [...prev, answerObject]);
+            // })
+        }
     }
     render() {
-        console.log(this.state, 'data loaded')
         return (
             <div>
                 <h1>Quiz Exam</h1>

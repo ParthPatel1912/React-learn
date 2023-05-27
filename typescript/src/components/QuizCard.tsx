@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react'
 
 type Props = {
@@ -12,7 +13,6 @@ type Props = {
 
 export class QuizCard extends Component<Props> {
     render(): JSX.Element {
-    console.log(this.props.question, 'here')
 
         return (
             <div>
@@ -23,8 +23,8 @@ export class QuizCard extends Component<Props> {
                 </p>
                 <p dangerouslySetInnerHTML={{__html: this.props.question.question}}/>
                 <div>
-                    {this.props.question.answer.map((answers:any) => (
-                        <div>
+                    {this.props.question.answer.map((answers:any, index:number) => (
+                        <div key={`hello${index}`}>
                             <button disabled={this.props.userAnswer} value={answers} onClick={this.props.callback}>
                                 <span dangerouslySetInnerHTML={{__html: answers}}/>
                             </button>

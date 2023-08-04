@@ -16,7 +16,6 @@ const SignUp = () => {
     const handleSubmit = (e) => {
         e.preventDefault()
         const errors = validate();
-        console.log("file: SignUp.jsx:19 ~ handleSubmit ~ errors:", errors)
         if (Object.keys(errors).length === 0) {
             const account = users.find((user) => user.username === username);
             if (account && account.password === password) {

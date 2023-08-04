@@ -16,15 +16,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CardMedia from '@mui/material/CardMedia';
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
-import { productRemove, productCartAdd, productCartSubtract } from '../redux/actions/ProductAction'
+import { Dispatch } from 'redux';
+import { productRemove, productCartAdd, productCartSubtract } from '../redux/actions/ProductAction';
+import { Item, MyAction, StateCart, PropsCart } from '../assets/constant/interface';
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: StateCart) => {
   return {
     cart: state.data
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
+export const mapDispatchToProps = (dispatch: Dispatch<MyAction>) => {
   return {
     addQty: (id: number) => {
       return dispatch(productCartAdd(id))
@@ -37,23 +39,16 @@ const mapDispatchToProps = (dispatch: any) => {
     }
   };
 };
-
-interface Props {
-  addQty: any;
-  subQty: any;
-  removeProduct: any;
-  cart: [];
-}
-
-export class Cart extends Component<Props> {
-  constructor(props: Props) {
+export class Cart extends Component<PropsCart> {
+  constructor(props: PropsCart) {
     super(props);
   }
 
   render() {
-    let amount = this.props.cart.length && this.props.cart.map((item: any) => (item.qty * item.price)).reduce((prev, next) => prev + next);
+    let amount = Math.round((this.props.cart.length && this.props.cart.map((item: Item) => (item.qty * item.price)).reduce((prev, next) => prev + next) * 100)) / 100;
     let discount = Math.round(((amount * 7) * 100) / 100) / 100;
     let tax = Math.round(((amount * 10) * 100) / 100) / 100;
+    let total = Math.round((amount - discount + tax) * 100) / 100;
     return (
       <>
         <Box
@@ -93,7 +88,7 @@ export class Cart extends Component<Props> {
                 </TableHead>
                 <TableBody>
                   {
-                    this.props.cart.map((item: any) =>
+                    this.props.cart.map((item: Item) =>
                       <TableRow key='new'>
                         <TableCell>{item.title.slice(0, 15)}</TableCell>
                         <TableCell>{item.category}</TableCell>
@@ -104,21 +99,21 @@ export class Cart extends Component<Props> {
                             title={`${item.title}`} />
                         </TableCell>
                         <TableCell align="center">
-                          <IconButton onClick={() => this.props.subQty(item.id)} disabled={item.qty === 1 ? true : false} color="primary" aria-label="add to shopping cart">
+                          <IconButton data-test-id='subQty' onClick={() => this.props.subQty(item.id)} disabled={item.qty === 1 ? true : false} color="primary" aria-label="add to shopping cart">
                             <RemoveIcon />
                           </IconButton>
                           {item.qty}
-                          <IconButton onClick={() => this.props.addQty(item.id)} color="primary" aria-label="add to shopping cart">
+                          <IconButton data-test-id='addQty' onClick={() => this.props.addQty(item.id)} color="primary" aria-label="add to shopping cart">
                             <AddIcon />
                           </IconButton>
                         </TableCell>
                         <TableCell align="right">{item.price}</TableCell>
                         <TableCell align="right">
-                          <Button variant="outlined" onClick={() => this.props.removeProduct(item.id)} color='error' startIcon={<DeleteIcon />}>
+                          <Button variant="outlined" data-test-id='removeItem' onClick={() => this.props.removeProduct(item.id)} color='error' startIcon={<DeleteIcon />}>
                             Delete
                           </Button>
                         </TableCell>
-                        <TableCell align="right">{item.price * item.qty}</TableCell>
+                        <TableCell align="right">{Math.round((item.price * item.qty) * 100) / 100}</TableCell>
                       </TableRow>
                     )}
                   <TableRow>
@@ -138,7 +133,7 @@ export class Cart extends Component<Props> {
                   </TableRow>
                   <TableRow>
                     <TableCell style={{ fontWeight: '600' }} colSpan={2}>Total</TableCell>
-                    <TableCell align="right">{amount - discount + tax}</TableCell>
+                    <TableCell align="right">{total}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

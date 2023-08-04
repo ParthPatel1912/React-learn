@@ -18,7 +18,9 @@ import { Link } from "react-router-dom";
 import Badge, { BadgeProps } from '@mui/material/Badge';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { productList, productAdd, productRemove } from '../redux/actions/ProductAction'
+import { Item, MyAction, StateList, PropsList } from '../assets/constant/interface';
 
 const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -33,9 +35,9 @@ interface ExpandMoreProps extends IconButtonProps {
   expand: boolean;
 }
 
-const ExpandMore = styled((props: ExpandMoreProps) => {
+export const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
-  return <IconButton {...other} />;
+  return <IconButton data-test-id="www" {...other} />;
 })(({ theme, expand }) => ({
   transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
   marginLeft: 'auto',
@@ -44,19 +46,19 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   }),
 }));
 
-const mapStateToProps = (state: any) => {
+const mapStateToProps = (state: StateList) => {
   return {
     data: state.product,
     cart: state.data
   };
 };
 
-const mapDispatchToProps = (dispatch: any) => {
+export const mapDispatchToProps = (dispatch: Dispatch<MyAction>) => {
   return {
     productList: () => {
       return dispatch(productList())
     },
-    addProduct: (item: any) => {
+    addProduct: (item: Item) => {
       return dispatch(productAdd(item))
     },
     removeProduct: (id: number) => {
@@ -65,28 +67,20 @@ const mapDispatchToProps = (dispatch: any) => {
   };
 };
 
-interface Props {
-  productList: any;
-  addProduct: any;
-  removeProduct: any;
-  data: [];
-  cart: [];
-}
-
-export class List extends Component<Props> {
-  constructor(props: Props) {
+export class List extends Component<PropsList> {
+  constructor(props: PropsList) {
     super(props);
   }
 
   state = { expanded: false, filterData: [] };
 
-  handleExpandClick = () => {
+  handleExpandClick = (id: number) => {
     this.setState({ expanded: !this.state.expanded });
   };
 
   componentDidMount() {
     this.props.productList();
-    const newData = this.props.data.map((item: any) => {
+    const newData = this.props.data.map((item: Item) => {
       return {
         ...item,
         qty: 1
@@ -95,9 +89,9 @@ export class List extends Component<Props> {
     this.setState({ filterData: newData })
   }
 
-  componentDidUpdate(prevProps: Props, prevState: any): void {
+  componentDidUpdate(prevProps: PropsList): void {
     if (this.props.data.length !== prevProps.data.length) {
-      const newData = this.props.data.map((item: any) => {
+      const newData = this.props.data.map((item: Item) => {
         return {
           ...item,
           qty: 1
@@ -108,9 +102,9 @@ export class List extends Component<Props> {
   }
 
   render() {
-    const searchData = (e: any) => {
+    const searchData = (e: React.ChangeEvent<HTMLInputElement>) => {
       const search = e.target.value.toLowerCase();
-      const modifiedData = this.props.data.filter((item: any) => item.title.toLowerCase().includes(search) || item.price.toString().includes(search))
+      const modifiedData = this.props.data.filter((item: Item) => item.title.toLowerCase().includes(search) || item.price.toString().includes(search))
       this.setState({ filterData: modifiedData })
     }
     return (
@@ -127,9 +121,9 @@ export class List extends Component<Props> {
             mt: 2,
             mb: 2
           }} >
-          <Link style={{ marginTop: '10px' }} to="/cart" >Go to Cart</Link>
+          <Link style={{ marginTop: '10px' }} to="/cart" id='cartLink' >Go to Cart</Link>
           <Link to="/cart">
-            <IconButton href='cart' aria-label="cart">
+            <IconButton data-test-id="www" href='cart' aria-label="cart">
               <StyledBadge badgeContent={this.props.cart.length} color="secondary">
                 <ShoppingCartIcon />
               </StyledBadge>
@@ -147,11 +141,11 @@ export class List extends Component<Props> {
           noValidate
           autoComplete="off"
         >
-          <TextField id="search" onChange={(e) => searchData(e)} label="Search Product" variant="outlined" />
+          <TextField data-test-id="search" onChange={(e: React.ChangeEvent<HTMLInputElement>) => searchData(e)} label="Search Product" variant="outlined" />
         </Box>
         <Grid container spacing={2} mb={3} justifyContent="flex-start">
           {
-            this.state.filterData.map((item: any) =>
+            this.state.filterData.map((item: Item) =>
               <Grid container key={item.id} xs={3} mt={2} item >
                 <Card sx={{ maxWidth: 330 }}>
                   <CardMedia
@@ -172,15 +166,16 @@ export class List extends Component<Props> {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button variant="outlined" onClick={() => this.props.addProduct(item)} startIcon={<AddShoppingCartOutlinedIcon />}>
+                    <Button variant="outlined" data-test-id="addCart" onClick={() => this.props.addProduct(item)} startIcon={<AddShoppingCartOutlinedIcon />}>
                       Add to Cart
                     </Button>
-                    <Button variant="outlined" onClick={() => this.props.removeProduct(item.id)} color='error' startIcon={<DeleteIcon />}>
+                    <Button variant="outlined" data-test-id="removeCart" onClick={() => this.props.removeProduct(item.id)} color='error' startIcon={<DeleteIcon />}>
                       Remove Product
                     </Button>
                     <ExpandMore
+                      data-test-id='ExpandMoreIcon'
                       expand={this.state.expanded}
-                      onClick={this.handleExpandClick}
+                      onClick={() => this.handleExpandClick(item.id)}
                       aria-expanded={this.state.expanded}
                       aria-label="show more" >
                       <ExpandMoreIcon />

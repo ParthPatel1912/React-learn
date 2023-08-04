@@ -1,0 +1,8 @@
+{
+    "header": {
+        "welcome": "Welcome!"
+    },
+    "home": {
+        "quantity_display": "You have {numApples, plural, one {1 apple} other {{numApples} apples}}."
+    }
+}

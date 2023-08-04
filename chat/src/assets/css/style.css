@@ -1,0 +1,15 @@
+.text-danger {
+  color: #ff0000;
+}
+
+.sender {
+  text-align: right;
+}
+
+.receiver{
+  text-align-last: right;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}

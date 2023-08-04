@@ -1,8 +1,8 @@
-import { PRODUCT_LIST, PRODUCT_ADD, PRODUCT_REMOVE, PRODUCT_SEARCH } from '../../assets/constant/sagaConstant'
+import { PRODUCT_LIST, PRODUCT_ADD, PRODUCT_REMOVE, PRODUCT_SEARCH, PRODUCT_CART_ADD, PRODUCT_CART_SUB } from '../../assets/constant/sagaConstant'
 import { takeEvery, call, put } from 'redux-saga/effects';
 import { listActivityApi } from '../api/productAPI'
 import { listActivity, serchProduct } from '../slices/productList'
-import { addToCart, removeFromCart } from '../slices/productData'
+import { addToCart, removeFromCart, cartProductAdd, cartProductSub } from '../slices/productData'
 
 function* getProducts() {
 	try {
@@ -42,11 +42,29 @@ function* searchProduct(action) {
 	}
 }
 
+function* addProductCart(action) {
+	try {
+		yield put(cartProductAdd(action.payload));
+	} catch (error) {
+		console.error('saga', error)
+	}
+}
+
+function* subProductCart(action) {
+	try {
+		yield put(cartProductSub(action.payload));
+	} catch (error) {
+		console.error('saga', error)
+	}
+}
+
 function* productSaga() {
 	yield takeEvery(PRODUCT_LIST, getProducts)
 	yield takeEvery(PRODUCT_ADD, addProduct)
 	yield takeEvery(PRODUCT_REMOVE, removeProduct)
 	yield takeEvery(PRODUCT_SEARCH, searchProduct)
+	yield takeEvery(PRODUCT_CART_ADD, addProductCart)
+	yield takeEvery(PRODUCT_CART_SUB, subProductCart)
 }
 
 export default productSaga

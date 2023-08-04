@@ -1,0 +1,9 @@
+export const USER_SIGNUP = 'USER_SIGNUP';
+export const USER_SIGNIN = 'USER_SIGNIN';
+export const USER_NAME_UPDATE = 'USER_NAME_UPDATE';
+export const USER_PASSWORD_UPDATE = 'USER_PASSWORD_UPDATE';
+export const SESSION = 'SESSION';
+export const REQUEST = 'REQUEST';
+export const REQUEST_UPDATE = 'REQUEST_UPDATE';
+export const CHAT = 'CHAT';
+export const CHAT_DELETE = 'CHAT_DELETE';

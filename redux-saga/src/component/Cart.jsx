@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { productRemove } from '../redux/actions/ProductAction'
+import { productRemove, productCartAdd, productCartSubtract } from '../redux/actions/ProductAction'
 
 const Cart = () => {
-  const cartData = useSelector((state) => (state.data.data))
-  const qty = useSelector((state) => (state.data.qty))
-  let amount = cartData.length && cartData.map(item => item.price).reduce((prev, next) => prev + next)
+  const cartData = useSelector((state) => (state.data))
+  let amount = cartData.length && cartData.map(item => (item.qty * item.price)).reduce((prev, next) => prev + next)
   const dispatch = useDispatch();
   return (
     <>
@@ -33,13 +32,17 @@ const Cart = () => {
               {
                 cartData.map((item) =>
                   <tr key={item.id}>
-                    <td style={{ border: '1px solid blue' }}>{item.title}</td>
+                    <td style={{ border: '1px solid blue' }}>{item.title.split(' ').slice(0, 2)}</td>
                     <td style={{ border: '1px solid blue' }}>{item.price}</td>
                     <td style={{ border: '1px solid blue' }}>{item.category}</td>
                     <td style={{ border: '1px solid blue' }}><img src={item.image} alt={item.title} style={{ width: '50px' }} /></td>
                     <td style={{ border: '1px solid blue' }}>{item.rating.rate}</td>
-                    <td style={{ border: '1px solid blue' }}>67676</td>
-                    <td style={{ border: '1px solid blue' }}>djbhgkdfuhgdfuky</td>
+                    <td style={{ border: '1px solid blue' }}>
+                      <button style={{ marginRight: '10px' }} disabled={item.qty === 1 ? true : false} onClick={() => dispatch(productCartSubtract(item.id))} >-</button>
+                      {item.qty}
+                      <button style={{ marginLeft: '10px' }} disabled={item.qty > 6 ? true : false} onClick={() => dispatch(productCartAdd(item.id))}>+</button>
+                    </td>
+                    <td style={{ border: '1px solid blue' }}>{item.price * item.qty}</td>
                     <td style={{ border: '1px solid blue' }}>
                       <span><button onClick={() => dispatch(productRemove(item.id))}>Delete</button></span>
                     </td>
@@ -48,13 +51,13 @@ const Cart = () => {
               }
             </tbody>
           </table>
-      <div className="price-details">
-        <div className="adjust-price"><span>Amount</span><span>{amount}</span></div>
-        <div className="adjust-price"><span>Discount</span><span>{amount / 10}</span></div>
-        <div className="adjust-price"><span>Tax</span><span>000</span></div>
-        <div className="adjust-price"><span>Total</span><span>{amount - (amount / 10)}</span></div>
+          <div className="price-details">
+            <div className="adjust-price"><span>Amount</span><span>{amount}</span></div>
+            <div className="adjust-price"><span>Discount</span><span>{Math.round(((amount * 7) * 100) / 100) / 100}</span></div>
+            <div className="adjust-price"><span>Tax</span><span>{0.00}</span></div>
+            <div className="adjust-price"><span>Total</span><span>{amount - Math.round(((amount * 7) * 100) / 100) / 100}</span></div>
 
-      </div>
+          </div>
         </div>
       }
     </>

@@ -26,18 +26,17 @@ const requestSlice = createSlice({
             } else {
                 let updated;
                 if (typeof userRequestFound !== 'undefined') {
-                    // if (action.payload.status === 1 || action.payload.status === 0) {
-                        updated = ([...state, { ...userRequestFound, status: action.payload.status }]);
-                    // } else {
-                        // updated = ([...state, { ...userRequestFound, status: action.payload.status, from: action.payload.from, to: action.payload.to }]);
-                        console.log("file: RequestData.js:33 ~ requestUserUpdate ~ updated:", JSON.stringify(updated));
-                    // }
-                    const new_data = [...new Map(updated.map(item =>
-                        [item['from'], item] && [item['to'], item])).values()];
-                    console.log("file: RequestData.js:37 ~ requestUserUpdate ~ new_data:", JSON.stringify(new_data));
+                    updated = ([...state, { ...userRequestFound, status: action.payload.status }]);
 
-                    console.log("file: RequestData.js:40 ~ requestUserUpdate ~ new_data.filter(item => item.status > 0):", JSON.stringify(new_data.filter(item => item.status > 0)));
-                    return (new_data.filter(item => item.status > 0));
+                    const uniqueMap = updated.reduce((map, item) => {
+                        const key = `${item.from}-${item.to}`;
+                        if (!map.has(key) || (item.status === 1 || item.status === 0)) {
+                            map.set(key, item);
+                        }
+                        return map;
+                    }, new Map());
+                    const uniqueParis = Array.from(uniqueMap.values());
+                    return (uniqueParis.filter(item => item.status > 0));
                 }
             }
 

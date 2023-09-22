@@ -25,7 +25,6 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { ChatDelete } from '../redux/actions/ChatAction';
 
 const Userlist = () => {
-  const [buttonText, setButtonText] = useState('');
 
   const navigate = useNavigate();
   const UserSession = useSelector((state: reduxState) => (state.session));
@@ -47,7 +46,6 @@ const Userlist = () => {
     '&:nth-of-type(odd)': {
       backgroundColor: theme.palette.action.hover,
     },
-    // hide last border
     '&:last-child td, &:last-child th': {
       border: 0,
     },
@@ -58,7 +56,6 @@ const Userlist = () => {
   const requestCountUser = UserRequestData.filter(item => ((item.to === UserSession.userEmail) && (item.status === 2)));
   const friendCountUser = UserRequestData.filter(item => ((item.from === UserSession.userEmail) && (item.status === 1)) || ((item.to === UserSession.userEmail) && (item.status === 1)));
 
-  // dialog alert
   const [open, setOpen] = useState(false);
   const [to, setTo] = useState('');
 
@@ -76,14 +73,6 @@ const Userlist = () => {
     setOpen(false);
   };
 
-  // const generateRandomString = (length: number) => {
-  //   const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  //   let result = '';
-  //   for (let i = 0; i < length; i++) {
-  //     result += characters.charAt(Math.floor(Math.random() * characters.length));
-  //   }
-  //   return result;
-  // };
   return (
     <>
       <div>
@@ -163,43 +152,63 @@ const Userlist = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {newuserData.map((row, index) => (
-                      <StyledTableRow key={index}>
-                        <StyledTableCell scope="row">
-                          {row.name}
-                        </StyledTableCell>
-                        <StyledTableCell align="right">
-                          {UserRequestData.map((item) => (
-                            ((((item.from === row.email) && (item.to === UserSession.userEmail)) && (item.status === 1)) || (((item.to === row.email) && (item.from === UserSession.userEmail)) && (item.status === 1))) &&
-                            <div>Friend</div>
-                            // setTest('Friend')
-                          ))}
-                          {UserRequestData.map((item) => (
-                            (((item.from === row.email) && (item.to === UserSession.userEmail)) && (item.status === 2)) &&
-                            <div>Received request</div>
-                            // setTest('Received request')
-                          ))}
-                          {UserRequestData.map((item) => (
-                            (((item.to === row.email) && (item.from === UserSession.userEmail)) && (item.status === 2)) &&
-                            <div>Already sent</div>
-                            // setTest('Already sent')
-                          ))}
-                          <Button
-                            size="small"
-                            variant="contained"
-                            color="primary"
-                            onMouseDown={event => event.stopPropagation()}
-                            onClick={event => {
-                              event.stopPropagation();
-                              event.preventDefault();
-                              dispatch(UpdateFriendRequest({ from: UserSession.userEmail, to: row.email, fromName: UserSession.userName, toName: row.name, status: 2 }));
-                            }}
-                          >
-                            Request
-                          </Button>
-                        </StyledTableCell>
-                      </StyledTableRow>
-                    ))}
+                    {newuserData.map((row, index) => {
+                      const calculateButtonText = () => {
+                        const friendRequest = UserRequestData.find(
+                          (item) => ((((item.from === row.email) && (item.to === UserSession.userEmail)) && (item.status === 1)) || (((item.to === row.email) && (item.from === UserSession.userEmail)) && (item.status === 1)))
+                        );
+
+                        const receivedRequest = UserRequestData.find(
+                          (item) => (((item.from === row.email) && (item.to === UserSession.userEmail)) && (item.status === 2))
+                        );
+
+                        const sentRequest = UserRequestData.find(
+                          (item) => (((item.to === row.email) && (item.from === UserSession.userEmail)) && (item.status === 2))
+                        );
+
+                        if (friendRequest) {
+                          return "Friend";
+                        } else if (receivedRequest) {
+                          return "Received Request";
+                        } else if (sentRequest) {
+                          return "Sent Request";
+                        } else {
+                          return "Request";
+                        }
+                      };
+
+                      return (
+                        <StyledTableRow key={index}>
+                          <StyledTableCell scope="row">
+                            {row.name}
+                          </StyledTableCell>
+                          <StyledTableCell align="right">
+                            <Button
+                              size="small"
+                              variant="contained"
+                              color="primary"
+                              onMouseDown={(event) => event.stopPropagation()}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                event.preventDefault();
+                                dispatch(
+                                  UpdateFriendRequest({
+                                    from: UserSession.userEmail,
+                                    to: row.email,
+                                    fromName: UserSession.userName,
+                                    toName: row.name,
+                                    status: 2,
+                                  })
+                                );
+                              }}
+                              disabled={['Friend', 'Received Request', 'Sent Request'].includes(calculateButtonText())}
+                            >
+                              {calculateButtonText()}
+                            </Button>
+                          </StyledTableCell>
+                        </StyledTableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -258,7 +267,6 @@ const Userlist = () => {
                               onClick={event => {
                                 event.stopPropagation();
                                 event.preventDefault();
-                                // const randomString = generateRandomString(10);
                                 const email = row.to === UserSession.userEmail ? (
                                   row.from) : (row.to
                                 )
@@ -280,7 +288,6 @@ const Userlist = () => {
                               onClick={event => {
                                 event.stopPropagation();
                                 event.preventDefault();
-                                // dispatch(UpdateFriendRequest({ from: UserSession.userEmail, to: row.to, fromName: UserSession.userName, toName: row.toName, status: 0 }));
                                 if (row.to === UserSession.userEmail) {
                                   setTo(row.from);
                                 } else {
